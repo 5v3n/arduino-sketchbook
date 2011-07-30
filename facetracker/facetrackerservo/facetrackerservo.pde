@@ -1,28 +1,92 @@
-/**
- * Simple Write. 
- * 
- * Check if the mouse is over a rectangle and writes the status to the serial port. 
- * This example works with the Wiring / Arduino program that follows below.
+/** Connecting an arduino controlled servo to processing.
+*
+*
+* Use keys '1' to '9' to control the servo from 0 - 180 degrees.
+*
  */
 
 
 import processing.serial.*;
+import oscP5.*;
+import netP5.*;
 
 Serial myPort;  // Create object from Serial class
-int val;        // Data received from the serial port
+OscP5 oscP5;
+NetAddress myRemoteLocation;
+float jaw, eyebrow, mouthHeight, mouthWidth, poseX, poseY, eyeLeft, eyeRight;
 
 void setup() 
 {
-  size(200, 200);
-  // I know that the first port in the serial list on my mac
-  // is always my  FTDI adaptor, so I open Serial.list()[0].
-  // On Windows machines, this generally opens COM1.
-  // Open whatever port is the one you're using.
+  // do we need a window?
+  size(640, 480);
+  //opening the serial port.
+  // could use Serial.list()[0] here:
   String portName = "/dev/tty.usbmodem621";
   myPort = new Serial(this, portName, 9600);
+  //setting up face osc
+  oscP5 = new OscP5(this, 8338);
+  myRemoteLocation = new NetAddress("127.0.0.1", 8338);
+  
+}
+
+void draw(){
 }
 
 void keyPressed(){
   myPort.write(key);
-  print(key);
+  println(key);
+}
+
+// parse the OSCface data
+void oscEvent(OscMessage theOscMessage) {
+ if (theOscMessage.checkAddrPattern("/gesture/mouth/width")==true) {
+   float firstValue = theOscMessage.get(0).floatValue();
+   mouthWidth = firstValue;
+   println("mouthWidth = "+mouthWidth);
+   println("sending mouthWidth % 10: " + ((int)mouthWidth%10));
+   
+   myPort.write(((int)mouthWidth%10)+48);
+ }
+ /*
+  if (theOscMessage.checkAddrPattern("/gesture/eyebrow/left")==true) {
+    float firstValue = theOscMessage.get(0).floatValue();
+    eyebrow = firstValue;
+    println("eyebrow = "+eyebrow);
+  }
+
+ if (theOscMessage.checkAddrPattern("/gesture/jaw")==true) {
+   float firstValue = theOscMessage.get(0).floatValue();
+   jaw = firstValue;
+   println("jaw = "+jaw);
+ }
+
+ if (theOscMessage.checkAddrPattern("/gesture/mouth/height")==true) {
+   float firstValue = theOscMessage.get(1).floatValue();
+   mouthHeight = firstValue;
+   println("mouthHeight = "+mouthHeight);
+ }
+
+ if (theOscMessage.checkAddrPattern("/pose/position")==true) {
+   float firstValue = theOscMessage.get(0).floatValue();
+   poseX = firstValue;
+   println("pose X = "+poseX);
+ }
+
+ if (theOscMessage.checkAddrPattern("/pose/position")==true) {
+   float firstValue = theOscMessage.get(1).floatValue();
+   poseY = firstValue;
+   println("pose Y = "+poseY);
+ }
+
+ if (theOscMessage.checkAddrPattern("/gesture/eye/left")==true) {
+   float firstValue = theOscMessage.get(0).floatValue();
+   eyeLeft = firstValue;
+   println("eyeLeft = "+eyeLeft);
+ }
+
+ if (theOscMessage.checkAddrPattern("/gesture/eye/right")==true) {
+   float firstValue = theOscMessage.get(0).floatValue();
+   eyeRight = firstValue;
+   println("eyeRight = "+eyeRight);
+ }*/
 }
