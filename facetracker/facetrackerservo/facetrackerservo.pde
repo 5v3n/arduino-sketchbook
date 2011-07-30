@@ -45,7 +45,7 @@ void oscEvent(OscMessage theOscMessage) {
    println("mouthWidth = "+mouthWidth);
    println("sending mouthWidth % 10: " + ((int)mouthWidth%10));
    
-   myPort.write(((int)mouthWidth%10)+48);
+   myPort.write(((int)mouthWidth%10));
  }
  /*
   if (theOscMessage.checkAddrPattern("/gesture/eyebrow/left")==true) {
