@@ -1,8 +1,6 @@
 /** Connecting an arduino controlled servo to processing.
 *
 *
-* Use keys '1' to '9' to control the servo from 0 - 180 degrees.
-*
  */
 
 
